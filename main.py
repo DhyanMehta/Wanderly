@@ -24,7 +24,7 @@ class QueryRequest(BaseModel):
 @app.post("/query")
 async def query_travel_agent(query:QueryRequest):
     try:
-        print(query)
+        print(f"Incoming query: {query.question}")
         graph = GraphBuilder(model_provider="groq")
         react_app=graph()
         #react_app = graph.build_graph()
@@ -46,4 +46,10 @@ async def query_travel_agent(query:QueryRequest):
         
         return {"answer": final_output}
     except Exception as e:
-        return JSONResponse(status_code=500, content={"error": str(e)})
+        return JSONResponse(
+            status_code=500,
+            content={
+                "error": str(e),
+                "hint": "Check configured LLM model name and required API keys in .env"
+            },
+        )
